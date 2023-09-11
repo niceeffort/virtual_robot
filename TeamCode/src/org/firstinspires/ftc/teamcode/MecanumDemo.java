@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.*;
 public class MecanumDemo extends LinearOpMode {
 
     public void runOpMode(){
+        boolean fieldCentric = false;
         DcMotor m1 = hardwareMap.dcMotor.get("back_left_motor");
         DcMotor m2 = hardwareMap.dcMotor.get("front_left_motor");
         DcMotor m3 = hardwareMap.dcMotor.get("front_right_motor");
@@ -48,9 +49,21 @@ public class MecanumDemo extends LinearOpMode {
 
             if (Math.abs(pa) < 0.05) pa = 0;
             double p1 = -px + py - pa;
-            double p2 = px + py + -pa;
+            double p2 = px + py - pa;
             double p3 = -px + py + pa;
             double p4 = px + py + pa;
+
+            // Rotate the movement direction counter to the bot's rotation
+            if(fieldCentric) {
+                float botHeading = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle;
+                double rotX = px * Math.cos(-botHeading) - py * Math.sin(-botHeading);
+                double rotY = px * Math.sin(-botHeading) + py * Math.cos(-botHeading);
+                p1 = -rotX + rotY - pa;
+                p2 = rotX + rotY - pa;
+                p3 = -rotX + rotY + pa;
+                p4 = rotX + rotY + pa;
+            }
+
             double max = Math.max(1.0, Math.abs(p1));
             max = Math.max(max, Math.abs(p2));
             max = Math.max(max, Math.abs(p3));
@@ -67,6 +80,8 @@ public class MecanumDemo extends LinearOpMode {
 //            Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             Orientation orientation = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             telemetry.addData("Heading", " %.1f", orientation.firstAngle * 180.0 / Math.PI);
+            Orientation deg_orientation = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            telemetry.addData("Heading Degrees", " %.1f", deg_orientation.firstAngle);
             telemetry.addData("Angular Velocity", "%.1f", imu.getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate);
             telemetry.addData("Front Distance", " %.1f", frontDistance.getDistance(DistanceUnit.CM));
             telemetry.addData("Left Distance", " %.1f", leftDistance.getDistance(DistanceUnit.CM));
