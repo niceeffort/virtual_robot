@@ -19,8 +19,8 @@ public class MyMecanumDemo extends LinearOpMode {
 
         waitForStart();
         while(opModeIsActive()){
-            double left_stick_y = 0;//-gamepad1.left_stick_y;
-            double left_stick_x = 0;//gamepad1.left_stick_x;
+            double left_stick_y = -gamepad1.left_stick_y;
+            double left_stick_x = gamepad1.left_stick_x;
             double triggers = gamepad1.left_trigger - gamepad1.right_trigger;
 
             front_left.setPower(left_stick_y + left_stick_x - triggers);
