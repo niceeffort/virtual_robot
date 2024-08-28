@@ -16,7 +16,6 @@ public class ForwardAndBack extends LinearOpMode {
         DcMotor m2 = hardwareMap.dcMotor.get("front_left_motor");
         DcMotor m3 = hardwareMap.dcMotor.get("front_right_motor");
         DcMotor m4 = hardwareMap.dcMotor.get("back_right_motor");
-
         DcMotor[] motors = {m1,m2,m3,m4};
 
         m1.setDirection(DcMotor.Direction.REVERSE);
